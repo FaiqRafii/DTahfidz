@@ -1,6 +1,6 @@
-# DTahfidz - Quran Memorization App
+# Pengelolaan Hafalan Santri
 
-DTahfidz is a mobile application designed to assist users in memorizing and tracking their Quranic recitation and hafalan (memorization). It provides a user-friendly interface with features such as profile management, schedule tracking, and the ability to mark progress in memorization. The application is designed for students of the Quran and provides tools for both musyrif (teachers) and students.
+Pengelolaan Hafalan Santri is a mobile application designed for managing Quran memorization for santri (students) at pondok pesantren (Islamic boarding schools). This app is specifically built to assist **musyrif** (Quran group leaders) and **admin tahfidz** in overseeing the Quran memorization process, attendance, and performance assessments of students.
 
 ---
 
@@ -18,24 +18,35 @@ DTahfidz is a mobile application designed to assist users in memorizing and trac
 
 ## Features
 
-- **User Authentication**: Login system for students and teachers (musyrif) using email and password.
-- **Profile Management**: Manage and update user profiles with personal information such as name, level, and email.
-- **Halaqoh Information**: Musyrif can manage and track halaqoh details, including the number of students and the location.
-- **Presensi Santri**: Teachers can mark attendance for students during specific prayer times (Subuh and Malam).
-- **Setoran Hafalan**: Record and view hafalan progress for each student, including the starting and ending surah and ayah.
-- **Quran Surah List**: API integration to fetch a list of Quranic surahs for easier navigation.
-- **Date and Time Tracking**: Track specific memorization sessions based on the time of day (Subuh/Malam).
+### Musyrif Tahfidz (Quran Group Leader)
+- **Login Page**: Musyrif logs in using their account provided by the admin. If they don't have an account, they can register (or the account can be created by the admin).
   
+- **Main Page (Dashboard Musyrif)**:
+  1. **View Santri List**: Musyrif can view the list of students in the halaqoh they are leading.
+  2. **Student Attendance**: Musyrif can mark attendance for students every day.
+  3. **Setoran Hafalan**: Musyrif can input daily memorization submissions from the students (e.g., Juz, Surah, and Ayah).
+  4. **Tahfidz Test Scores**: Musyrif can input the memorization test scores for each student.
+
+### Admin Tahfidz (Admin)
+- **Login Page**: Admin logs in using a special admin account. Admin cannot register from the application; accounts are manually created by the system.
+
+- **Main Page (Dashboard Admin)**:
+  1. **Input New Santri Data**: Admin can add new students (name, nis, halaqoh, and musyrif).
+  2. **Input New Musyrif Data**: Admin can add new musyrif and assign tahfidz halaqoh groups to them.
+  3. **View Hafalan Reports**: Admin can view memorization progress and test scores of all musyrif's students.
+  4. **View Student Attendance**: Admin can monitor student attendance on a daily basis.
+
+### Profile / Settings
+- **Change Password**: Users (musyrif/admin) can update their password through the settings page.
+
 ---
 
 ## Tech Stack
 
-- **Frontend**: Flutter
+- **Frontend**: Flutter (Dart)
 - **State Management**: Provider, Stateful Widgets
-- **Backend (API)**: Local JSON data and Quran API for surah information.
-- **Authentication**: Local user authentication with stored credentials.
-- **Database**: Local JSON storage for user and memorization data.
-- **Design**: Material Design principles for an intuitive user experience.
+- **Backend (API)**: Local JSON data for user and memorization records, Quran API for dynamic surah fetching.
+- **Design**: Material Design principles for intuitive navigation and a seamless user experience.
 
 ---
 
@@ -43,27 +54,27 @@ DTahfidz is a mobile application designed to assist users in memorizing and trac
 
 ### Prerequisites
 
-- Ensure that you have Flutter installed on your machine. You can follow the [Flutter installation guide](https://flutter.dev/docs/get-started/install).
-- Ensure you have a suitable IDE for Flutter development such as Android Studio or VS Code.
+- Flutter SDK installed. If not, follow the [Flutter Installation Guide](https://flutter.dev/docs/get-started/install).
+- A suitable IDE, such as Android Studio or Visual Studio Code, with Flutter and Dart plugins.
 
 ### Steps
 
 1. Clone the repository to your local machine:
     ```bash
-    git clone https://github.com/yourusername/dtahfidz.git
+    git clone https://github.com/yourusername/pengelolaan-hafalan-santri.git
     ```
 
 2. Navigate into the project directory:
     ```bash
-    cd dtahfidz
+    cd pengelolaan-hafalan-santri
     ```
 
-3. Get the required dependencies:
+3. Install the dependencies:
     ```bash
     flutter pub get
     ```
 
-4. Run the app on your emulator or physical device:
+4. Run the application:
     ```bash
     flutter run
     ```
@@ -72,29 +83,35 @@ DTahfidz is a mobile application designed to assist users in memorizing and trac
 
 ## Usage
 
-### Running the Application
+### Musyrif Tahfidz (Quran Group Leader)
 
-- Open the app on your device or emulator.
-- Log in using a pre-existing account or create a new account.
-- You can access the main features via the home screen, including:
-  - **Profile**: View and edit your profile information.
-  - **Presensi**: Mark your attendance during Subuh and Malam.
-  - **Setoran Hafalan**: Track your Quran memorization progress.
-  - **Halaqoh**: View the details of your halaqoh.
+1. **Login**: Musyrif logs in using the credentials provided by the admin or creates a new account if allowed.
+2. **Dashboard**:
+   - **Santri List**: View the list of students in the halaqoh.
+   - **Attendance**: Mark student attendance during Subuh and Malam sessions.
+   - **Setoran Hafalan**: Input daily memorization progress (Juz, Surah, and Ayah).
+   - **Test Scores**: Enter tahfidz exam results for students.
 
-### Notes
+### Admin Tahfidz (Admin)
 
-- The application uses local JSON files to store user, halaqoh, and presensi data. You may want to integrate a backend for production purposes.
-- The app includes a Quran API to fetch surah names dynamically.
+1. **Login**: Admin logs in using their special account.
+2. **Dashboard**:
+   - **Add Santri**: Input new student information such as name, nis, halaqoh, and assigned musyrif.
+   - **Add Musyrif**: Manage musyrif accounts and assign halaqoh groups to them.
+   - **View Reports**: View memorization progress, attendance, and exam results of students across all musyrif.
+
+### Profile / Settings
+
+- Both musyrif and admin can access their profile and change their password through the settings page.
 
 ---
 
 ## File Structure
 
-The project is organized as follows:
+The project structure is organized as follows:
 
 ```plaintext
-DTahfidz/
+PengelolaanHafalanSantri/
 ├── assets/
 │   └── data/
 │       ├── halaqoh.json          # Sample halaqoh data
@@ -102,9 +119,9 @@ DTahfidz/
 │       ├── setoranSantri.json    # Sample setoran hafalan data
 │       └── user.json             # Sample user data
 ├── lib/
-│   ├── model/                    # Contains data models (User, Halaqoh, etc.)
-│   ├── view/                     # Contains all screen UI files (Profile, Home, etc.)
-│   ├── viewmodel/                # Contains the view models for business logic
-│   └── main.dart                 # Main entry point of the Flutter app
+│   ├── model/                    # Data models (User, Halaqoh, Setoran, etc.)
+│   ├── view/                     # Screen UI files (Profile, Home, etc.)
+│   ├── viewmodel/                # View models for business logic
+│   └── main.dart                 # Entry point of the Flutter app
 ├── pubspec.yaml                  # Flutter project dependencies
 └── README.md                     # Documentation file
