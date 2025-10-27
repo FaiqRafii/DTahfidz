@@ -1,6 +1,6 @@
-# Pengelolaan Hafalan Santri
+# DTahfidz
 
-Pengelolaan Hafalan Santri is a mobile application designed for managing Quran memorization for santri (students) at pondok pesantren (Islamic boarding schools). This app is specifically built to assist **musyrif** (Quran group leaders) and **admin tahfidz** in overseeing the Quran memorization process, attendance, and performance assessments of students.
+DTahfidz is a mobile application designed to manage Quran memorization (hafalan) for students (santri) at Islamic boarding schools (pondok pesantren). The application assists **musyrif** (Quran group leaders) and **admin tahfidz** (administrators) in monitoring student progress, managing attendance, and evaluating their Quran memorization performance.
 
 ---
 
@@ -61,12 +61,12 @@ Pengelolaan Hafalan Santri is a mobile application designed for managing Quran m
 
 1. Clone the repository to your local machine:
     ```bash
-    git clone https://github.com/yourusername/pengelolaan-hafalan-santri.git
+    git clone https://github.com/yourusername/DTahfidz.git
     ```
 
 2. Navigate into the project directory:
     ```bash
-    cd pengelolaan-hafalan-santri
+    cd DTahfidz
     ```
 
 3. Install the dependencies:
@@ -111,7 +111,7 @@ Pengelolaan Hafalan Santri is a mobile application designed for managing Quran m
 The project structure is organized as follows:
 
 ```plaintext
-PengelolaanHafalanSantri/
+DTahfidz/
 ├── assets/
 │   └── data/
 │       ├── halaqoh.json          # Sample halaqoh data
