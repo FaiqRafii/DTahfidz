@@ -42,7 +42,7 @@ DTahfidz is a mobile application designed to manage Quran memorization (hafalan)
 
 - **Frontend**: Flutter (Dart)
 - **State Management**: Provider, Stateful Widgets
-- **Backend (API)**: JSON data for user and memorization records, Quran API for dynamic surah fetching.
+- **Backend**: API based JSON data for user, santri, attendance, and memorization records, Quran API for dynamic surah fetching.
 - **Design**: Material Design principles for intuitive navigation and a seamless user experience.
 
 ---
