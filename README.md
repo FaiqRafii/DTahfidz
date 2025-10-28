@@ -29,11 +29,11 @@ DTahfidz is a mobile application designed to manage Quran memorization (hafalan)
 - **Attendance Page**:
   Musyrif can mark halaqoh's students' daily attendance according to the date and tahfidz hours (Subuh: 04.30 WIB - 05.30 WIB, Nights: 18.30 WIB - 19.30 WIB).
 
-- **Quran Memorization Records**:
+- **Quran Memorization Records Page**:
   1. **Input Quran Memorization Record**: Musyrif can input daily memorization submissions from the students (Date, Tahfidz Hours, Beginning Surah, Beginning Ayah, Ending Surah, and Ending Ayah).
   2. **View Quran Memorization Record**: Musyrif can see the student's previous Quran memorization records (Date, Tahfidz Hours, Beginning Surah, Beginning Ayah, Ending Surah, and Ending Ayah).
 
-- **Profile / Settings**:
+- **Profile Page**:
   1. **Change Password**: Musyrif can update their password through the settings page.
 
 ---
