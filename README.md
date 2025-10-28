@@ -1,6 +1,6 @@
 # DTahfidz
 
-DTahfidz is a mobile application designed to manage Quran memorization (hafalan) for students (santri) at Islamic boarding schools (pondok pesantren). The application assists **musyrif** (Quran group leaders) and **admin tahfidz** (administrators) in monitoring student progress, managing attendance, and recording their Quran memorization.
+DTahfidz is a mobile application designed to manage Quran memorization (hafalan) for students (santri) at Islamic boarding schools (pondok pesantren). The application assists **musyrif** (Quran group leaders) in monitoring student progress, managing attendance, and recording their Quran memorization.
 
 ---
 
