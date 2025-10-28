@@ -33,8 +33,8 @@ DTahfidz is a mobile application designed to manage Quran memorization (hafalan)
   1. **Input Quran Memorization Record**: Musyrif can input daily memorization submissions from the students (Date, Tahfidz Hours, Beginning Surah, Beginning Ayah, Ending Surah, and Ending Ayah).
   2. **View Quran Memorization Record**: Musyrif can see the student's previous Quran memorization records (Date, Tahfidz Hours, Beginning Surah, Beginning Ayah, Ending Surah, and Ending Ayah).
 
-### Profile / Settings
-- **Change Password**: Musyrif can update their password through the settings page.
+- **Profile / Settings**:
+  1. **Change Password**: Musyrif can update their password through the settings page.
 
 ---
 
