@@ -10,7 +10,6 @@ DTahfidz is a mobile application designed to manage Quran memorization (hafalan)
 - [Tech Stack](#tech-stack)
 - [Installation](#installation)
 - [File Structure](#file-structure)
-- [Contributing](#contributing)
 - [License](#license)
 
 ---
@@ -98,33 +97,6 @@ DTahfidz/
 ├── pubspec.yaml                  # Flutter project dependencies
 └── README.md                     # Documentation file
 ```
-
----
-## Contributing
-
-We welcome contributions to improve the project! If you'd like to contribute, please follow these steps:
-
-1. **Fork** the repository.
-2. **Clone** your forked repository to your local machine:
-    ```bash
-    git clone https://github.com/yourusername/DTahfidz.git
-    ```
-3. **Create a new branch** for your feature:
-    ```bash
-    git checkout -b feature-name
-    ```
-4. **Make your changes** and ensure the app works as expected.
-5. **Commit your changes** with a meaningful message:
-    ```bash
-    git commit -m 'Add new feature or fix issue'
-    ```
-6. **Push your changes** to your forked repository:
-    ```bash
-    git push origin feature-name
-    ```
-7. **Open a pull request** to the main branch of the original repository.
-
-We encourage you to create issues for bug reports or feature requests to help us improve the project!
 
 ---
 
