@@ -120,32 +120,37 @@ class _HomeState extends State<Home> {
                   decoration: BoxDecoration(color: Colors.grey.shade100),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 10,
+                    child: Column(
                       children: [
-                        CircleAvatar(
-                          radius: 15,
-                          backgroundColor: Colors.green.shade100,
-                          child: Text(
-                            this.user!.nama.isNotEmpty
-                                ? this.user!.nama[0].toUpperCase()
-                                : '',
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: Colors.green.shade700,
-                              fontWeight: FontWeight.bold,
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          spacing: 10,
+                          children: [
+                            CircleAvatar(
+                              radius: 15,
+                              backgroundColor: Colors.green.shade100,
+                              child: Text(
+                                this.user!.nama.isNotEmpty
+                                    ? this.user!.nama[0].toUpperCase()
+                                    : '',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  color: Colors.green.shade700,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
-                          ),
+                            Text(
+                              '${this.user!.nama}',
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ],
                         ),
-                        Text(
-                          '${this.user!.nama}',
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15,
-                          ),
-                        ),
+                        SizedBox(height: 10),
                       ],
                     ),
                   ),
