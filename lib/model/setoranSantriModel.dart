@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class Setoran {
   final String id_setoran;
   final String id_santri;
@@ -20,15 +22,19 @@ class Setoran {
   });
 
   factory Setoran.fromJson(Map<String, dynamic> json) {
+    String formattedDate = DateFormat(
+      'dd-MM-yyyy',
+    ).format(DateTime.parse(json['tanggal']));
+
     return Setoran(
-      id_setoran: json['id_setoran'],
+      id_setoran: json['_id'],
       id_santri: json['id_santri'],
-      tanggal: json['tanggal'],
-      waktu: json['waktu'],
-      id_surah_mulai: json['id_surah_mulai'],
-      ayat_mulai: json['ayat_mulai'],
-      id_surah_akhir: json['id_surah_akhir'],
-      ayat_akhir: json['ayat_akhir'],
+      tanggal: formattedDate,
+      waktu: json['jam'],
+      id_surah_mulai: json['id_surah_mulai'].toString(),
+      ayat_mulai: json['ayat_mulai'].toString(),
+      id_surah_akhir: json['id_surah_akhir'].toString(),
+      ayat_akhir: json['ayat_akhir'].toString(),
     );
   }
 }

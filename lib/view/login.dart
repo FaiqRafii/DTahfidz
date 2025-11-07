@@ -14,6 +14,7 @@ class _LoginState extends State<Login> {
   final TextEditingController _passwordController = TextEditingController();
   bool _isObscured = true;
   bool _rememberMe = false;
+  bool isLoading = false;
   String errorMessage = '';
 
   @override
@@ -145,7 +146,16 @@ class _LoginState extends State<Login> {
                 Container(
                   width: double.infinity,
                   child: ElevatedButton(
-                    child: Text('Masuk'),
+                    child: isLoading
+                        ? SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 1,
+                            ),
+                          )
+                        : Text('Masuk'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green.shade700,
                       foregroundColor: Colors.white,
@@ -165,11 +175,18 @@ class _LoginState extends State<Login> {
   }
 
   void _login() async {
+    setState(() {
+      isLoading = true;
+    });
     String email = _emailController.text;
     String password = _passwordController.text;
 
     LoginViewModel viewModel = LoginViewModel();
     User? user = await viewModel.login(email, password);
+
+    setState(() {
+      isLoading = false;
+    });
 
     if (user != null) {
       Navigator.pushNamed(context, '/home', arguments: user);

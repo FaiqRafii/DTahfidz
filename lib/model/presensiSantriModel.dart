@@ -17,12 +17,17 @@ class PresensiSantri {
 
   factory PresensiSantri.fromJson(Map<String, dynamic> json) {
     return PresensiSantri(
-      id_presensi: json['id_presensi'],
-      id_santri: json['id_santri'],
+      id_presensi: json['_id'],
+      id_santri: json['id_santri']['_id'],
       tanggal: json['tanggal'],
       jam: json['jam'],
       status: json['status'],
-      nama: '',
+      nama: json['id_santri']['nama'],
     );
+  }
+
+  @override
+  String toString() {
+    return 'PresensiSantri{id_presensi: $id_presensi, id_santri: $id_santri, nama: $nama, tanggal: $tanggal, jam: $jam, status: $status}';
   }
 }

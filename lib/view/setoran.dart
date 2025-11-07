@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:project_uas/model/halaqohModel.dart';
+import 'package:project_uas/model/quranModel.dart';
 import 'package:project_uas/model/santriModel.dart';
 import 'package:project_uas/view/components/tabLihat.dart';
 import 'package:project_uas/view/components/tabTambah.dart';
+import 'package:project_uas/viewmodel/quranViewModel.dart';
 import 'package:project_uas/viewmodel/santriViewModel.dart';
 
 class Setoran extends StatefulWidget {
@@ -14,14 +16,19 @@ class Setoran extends StatefulWidget {
 
 class _SetoranState extends State<Setoran> with SingleTickerProviderStateMixin {
   late TabController tabController;
-  Map<String, String> selectedSantri = {};
+  Map<String, String> selectedSantri = {}; // Initialize selectedSantri
 
   List<Santri> santriList = [];
   List<Santri> filteredSantriList = [];
 
   Halaqoh? halaqoh;
+  String idAwal = "";
+
+  bool isLoading = false;
 
   TextEditingController searchController = TextEditingController();
+
+  List<Quran> surahList = [];
 
   @override
   void initState() {
@@ -31,20 +38,45 @@ class _SetoranState extends State<Setoran> with SingleTickerProviderStateMixin {
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     halaqoh = ModalRoute.of(context)?.settings.arguments as Halaqoh?;
-    loadSantriList();
+
+    if (halaqoh != null) {
+      setState(() {
+        isLoading = true;
+      });
+      loadSantriList();
+      setState(() {
+        isLoading = false;
+      });
+    } else {
+      // Handle error if halaqoh is null, e.g., show an error message
+      print("Halaqoh is null");
+    }
   }
 
   Future<void> loadSantriList() async {
+    print("halaqoh id: ${halaqoh!.id_halaqoh}");
     List<Santri> data = await SantriViewModel().getSantriByHalaqoh(
       halaqoh!.id_halaqoh,
     );
 
+    print("Data santri from api: ${data}");
+
     setState(() {
       santriList = data;
       filteredSantriList = santriList; // Initialize filtered list
+
+      if (santriList.isNotEmpty) {
+        idAwal = santriList.first.id_santri;
+        selectedSantri = {
+          'id_user': santriList.first.id_santri,
+          'nama': santriList.first.nama,
+        };
+      } else {
+        idAwal = ''; // Handle empty case if needed
+        selectedSantri = {'id_user': '', 'nama': 'No Santri Available'};
+      }
     });
   }
 
@@ -57,8 +89,6 @@ class _SetoranState extends State<Setoran> with SingleTickerProviderStateMixin {
     setState(() {
       filteredSantriList = results;
     });
-
-    print('Filtered Surahs: ${filteredSantriList.length}');
   }
 
   void _showSantriDialog(BuildContext context) {
@@ -103,7 +133,6 @@ class _SetoranState extends State<Setoran> with SingleTickerProviderStateMixin {
                         },
                       ),
                     ),
-                    // Add a check to see if filteredSurahList is empty or not
                     filteredSantriList.isEmpty
                         ? Center(
                             child: Text(
@@ -164,93 +193,34 @@ class _SetoranState extends State<Setoran> with SingleTickerProviderStateMixin {
         ),
         centerTitle: true,
       ),
-      body: Stack(
-        children: [
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.15,
-              decoration: BoxDecoration(color: Colors.green.shade700),
-              child: Padding(
-                padding: EdgeInsetsGeometry.symmetric(
-                  horizontal: 20,
-                  vertical: 15,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.7,
-                      height: 56,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(5),
+      body: isLoading
+          ? Center(
+              child: CircularProgressIndicator(color: Colors.green.shade700),
+            )
+          : Stack(
+              children: [
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.15,
+                    decoration: BoxDecoration(color: Colors.green.shade700),
+                    child: Padding(
+                      padding: EdgeInsetsGeometry.symmetric(
+                        horizontal: 20,
+                        vertical: 15,
                       ),
-                      child: FutureBuilder(
-                        future: SantriViewModel().getSantriByHalaqoh(
-                          halaqoh!.id_halaqoh,
-                        ),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return Expanded(
-                              child: GestureDetector(
-                                onTap: () => _showSantriDialog(context),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5),
-                                    color: Colors.white,
-                                    border: Border.all(
-                                      color: Colors.grey.shade700,
-                                    ),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(5),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Icon(
-                                          Icons.person,
-                                          color: Colors.green.shade700,
-                                          size: 25,
-                                        ),
-                                        //datepicker
-                                        Text(
-                                          this.santriList.first.nama,
-                                          style: TextStyle(
-                                            fontFamily: 'Poppins',
-                                          ),
-                                        ),
-                                        Icon(
-                                          Icons.arrow_drop_down_rounded,
-                                          color: Colors.green.shade700,
-                                          size: 30,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          } else if (snapshot.hasError) {
-                            return Text(
-                              'Error: ${snapshot.error}',
-                              style: TextStyle(fontFamily: 'Poppins'),
-                            );
-                          } else if (!snapshot.hasData ||
-                              snapshot.data!.isEmpty) {
-                            return Text(
-                              'No Santri Found',
-                              style: TextStyle(fontFamily: 'Poppins'),
-                            );
-                          }
-
-                          List<Santri> santriList = snapshot.data!;
-
-                          return Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.7,
+                            height: 56,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
                             child: GestureDetector(
                               onTap: () => _showSantriDialog(context),
                               child: Container(
@@ -272,10 +242,11 @@ class _SetoranState extends State<Setoran> with SingleTickerProviderStateMixin {
                                         color: Colors.green.shade700,
                                         size: 25,
                                       ),
-                                      //datepicker
                                       Text(
                                         selectedSantri['nama'] ??
-                                            santriList.first.nama,
+                                            (santriList.isNotEmpty
+                                                ? santriList.first.nama
+                                                : 'Memuat...'),
                                         style: TextStyle(fontFamily: 'Poppins'),
                                       ),
                                       Icon(
@@ -288,89 +259,85 @@ class _SetoranState extends State<Setoran> with SingleTickerProviderStateMixin {
                                 ),
                               ),
                             ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            top: MediaQuery.of(context).size.height * 0.13,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade100,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(5),
-                        child: TabBar(
-                          labelColor: Colors.white,
-                          unselectedLabelColor: Colors.green.shade700,
-                          indicatorColor: Colors.green.shade700,
-                          indicatorSize: TabBarIndicatorSize.tab,
-                          indicatorWeight: 2,
-                          unselectedLabelStyle: TextStyle(
-                            fontWeight: FontWeight.normal,
-                          ),
-                          dividerColor: Colors.grey.shade100,
-                          labelStyle: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                          ),
-                          indicator: BoxDecoration(
-                            color: Colors.green,
-
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          controller: tabController,
-
-                          tabs: [
-                            Tab(text: 'Tambah'),
-                            Tab(
-                              text: 'Lihat',
-                            ), // Mengubah tab ke dua untuk contoh
-                          ],
-                        ),
-                      ),
-                    ),
-                    // Anda bisa menambahkan TabBarView di bawah TabBar
-                    Expanded(
-                      child: TabBarView(
-                        controller: tabController,
-                        children: [
-                          TabTambah(),
-                          TabLihat(
-                            selectedIdSantri: selectedSantri['id_user'] ?? '1',
                           ),
                         ],
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
+                Positioned(
+                  top: MediaQuery.of(context).size.height * 0.13,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade100,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.all(5),
+                              child: TabBar(
+                                labelColor: Colors.white,
+                                unselectedLabelColor: Colors.green.shade700,
+                                indicatorColor: Colors.green.shade700,
+                                indicatorSize: TabBarIndicatorSize.tab,
+                                indicatorWeight: 2,
+                                unselectedLabelStyle: TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                ),
+                                dividerColor: Colors.grey.shade100,
+                                labelStyle: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                indicator: BoxDecoration(
+                                  color: Colors.green,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                controller: tabController,
+                                tabs: [
+                                  Tab(text: 'Tambah'),
+                                  Tab(text: 'Lihat'),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: TabBarView(
+                              controller: tabController,
+                              children: [
+                                TabTambah(
+                                  id_santri:
+                                      selectedSantri['id_user'] ?? idAwal,
+                                ),
+                                TabLihat(
+                                  selectedIdSantri:
+                                      selectedSantri['id_user'] ?? idAwal,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 }

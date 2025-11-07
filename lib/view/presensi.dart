@@ -153,7 +153,7 @@ class _PresensiState extends State<Presensi> {
                       child: Container(
                         width: 50,
                         height: 50,
-                        padding: EdgeInsets.all(9),
+                        padding: EdgeInsets.all(7),
                         decoration: BoxDecoration(
                           color: waktu.waktu == 'subuh'
                               ? Colors.white
@@ -194,7 +194,7 @@ class _PresensiState extends State<Presensi> {
                       child: Container(
                         width: 50,
                         height: 50,
-                        padding: EdgeInsets.all(8),
+                        padding: EdgeInsets.all(7),
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.white),
                           color: waktu.waktu == 'malam'
@@ -202,27 +202,29 @@ class _PresensiState extends State<Presensi> {
                               : Colors.green.shade700,
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Column(
-                          children: [
-                            Icon(
-                              Icons.nights_stay,
-                              size: 17,
-                              color: waktu.waktu == 'malam'
-                                  ? Colors.green.shade700
-                                  : Colors.white,
-                            ),
-                            Text(
-                              'Malam',
-                              style: TextStyle(
-                                fontSize: 8,
-                                fontFamily: 'Poppins',
+                        child: Center(
+                          child: Column(
+                            children: [
+                              Icon(
+                                Icons.nights_stay,
+                                size: 17,
                                 color: waktu.waktu == 'malam'
                                     ? Colors.green.shade700
                                     : Colors.white,
-                                fontWeight: FontWeight.w600,
                               ),
-                            ),
-                          ],
+                              Text(
+                                'Malam',
+                                style: TextStyle(
+                                  fontSize: 8,
+                                  fontFamily: 'Poppins',
+                                  color: waktu.waktu == 'malam'
+                                      ? Colors.green.shade700
+                                      : Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

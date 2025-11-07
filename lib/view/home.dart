@@ -21,33 +21,43 @@ class _HomeState extends State<Home> {
   Halaqoh? halaqoh;
   late Future<List<PresensiMusyrif>> presensiMusyrif;
   bool isLoading = true;
+  bool isLoadingHadir = false;
   WaktuViewModel waktuViewModel = WaktuViewModel();
   String? waktuStatus;
+  String isFull = '';
 
-  Future<void> loadHalaqohHome() async {
-    print("masuk loadhalaqohhome");
-    final User user = ModalRoute.of(context)?.settings.arguments as User;
-    final List<Halaqoh> allHalaqoh = await halaqohViewModel.loadHalaqoh();
-    print("Semua Halaqoh: $allHalaqoh"); // Debugging: Print semua data halaqoh
-
-    final filteredHalaqoh = allHalaqoh.firstWhere(
-      (halaqoh) => halaqoh.id_user == user.id_user,
-      orElse: () => Halaqoh(
-        id_halaqoh: '',
-        id_user: 'Not Found',
-        halaqoh: 'Not Found',
-        jumlah_santri: '0',
-        lokasi_halaqoh: 'Not Found',
-      ),
+  Future<void> loadHalaqohHome(User user) async {
+    final Halaqoh filteredHalaqoh = await halaqohViewModel.loadHalaqoh(
+      user!.id_user,
     );
-    print(
-      "Filtered Halaqoh: $filteredHalaqoh",
-    ); // Debugging: Print halaqoh yang difilter
 
     setState(() {
       halaqoh = filteredHalaqoh;
       isLoading = false;
     });
+    // print("masuk loadhalaqohhome");
+    // final User user = ModalRoute.of(context)?.settings.arguments as User;
+    // final List<Halaqoh> allHalaqoh = await halaqohViewModel.loadHalaqoh();
+    // print("Semua Halaqoh: $allHalaqoh"); // Debugging: Print semua data halaqoh
+
+    // final filteredHalaqoh = allHalaqoh.firstWhere(
+    //   (halaqoh) => halaqoh.id_user == user.id_user,
+    //   orElse: () => Halaqoh(
+    //     id_halaqoh: '',
+    //     id_user: 'Not Found',
+    //     halaqoh: 'Not Found',
+    //     jumlah_santri: '0',
+    //     lokasi_halaqoh: 'Not Found',
+    //   ),
+    // );
+    // print(
+    //   "Filtered Halaqoh: $filteredHalaqoh",
+    // ); // Debugging: Print halaqoh yang difilter
+
+    // setState(() {
+    //   halaqoh = filteredHalaqoh;
+    //   isLoading = false;
+    // });
   }
 
   @override
@@ -62,19 +72,14 @@ class _HomeState extends State<Home> {
 
     user = ModalRoute.of(context)?.settings.arguments as User?;
 
-    if (user != null) {
-      setState(() {
-        this.presensiMusyrif = PresensiMusyrifViewModel().fetchPresensiById(
-          this.user!.id_user,
-          '${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}',
-        );
-      });
-    }
-
-    loadHalaqohHome();
+    loadHalaqohHome(user!);
 
     Waktu WaktuChecked = waktuViewModel.cekWaktu();
     setState(() {
+      presensiMusyrif = PresensiMusyrifViewModel().fetchPresensiById(
+        user!.id_user,
+        '${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}',
+      );
       waktuStatus = WaktuChecked.waktu;
     });
   }
@@ -462,22 +467,22 @@ class _HomeState extends State<Home> {
                                       List<PresensiMusyrif> presensiList =
                                           snapshot.data!;
 
-                                      // Check if there are enough items in presensiList
                                       if (presensiList.isNotEmpty) {
-                                        if (presensiList.length < 2) {
-                                          if (presensiList[0].jam == 'subuh') {
+                                        // Iterate through the presensiList to check for specific times
+                                        for (var presensi in presensiList) {
+                                          if (presensi.jam == 'subuh') {
                                             isSubuhPresensi = true;
-                                          } else {
+                                          } else if (presensi.jam == 'malam') {
                                             isMalamPresensi = true;
                                           }
-                                        } else if (presensiList.length > 1) {
-                                          isSubuhPresensi = true;
-                                          isMalamPresensi = true;
                                         }
                                       } else {
-                                        // Handle the case where the list is empty
                                         isSubuhPresensi = false;
                                         isMalamPresensi = false;
+                                      }
+
+                                      if (isSubuhPresensi && isSubuhPresensi) {
+                                        isFull = 'yes';
                                       }
 
                                       return Table(
@@ -569,9 +574,50 @@ class _HomeState extends State<Home> {
                                 Container(
                                   width: double.infinity,
                                   child: ElevatedButton(
-                                    onPressed: waktuStatus == 'none'
+                                    onPressed:
+                                        isFull == "yes" || waktuStatus == 'none'
                                         ? null
-                                        : () {},
+                                        : () async {
+                                            setState(() {
+                                              isLoadingHadir = true;
+                                            });
+                                            final add =
+                                                await PresensiMusyrifViewModel()
+                                                    .addPresensiMusyrif(
+                                                      user!.id_user,
+                                                      tanggalAngka,
+                                                      waktuStatus!,
+                                                    );
+                                            if (add) {
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                    "Berhasil Absen",
+                                                  ),
+                                                ),
+                                              );
+
+                                              setState(() {
+                                                presensiMusyrif =
+                                                    PresensiMusyrifViewModel()
+                                                        .fetchPresensiById(
+                                                          user!.id_user,
+                                                          '${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}',
+                                                        );
+                                                isLoadingHadir = false;
+                                              });
+                                            } else {
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
+                                                SnackBar(
+                                                  content: Text("Gagal Absen"),
+                                                ),
+                                              );
+                                            }
+                                          },
                                     style: ElevatedButton.styleFrom(
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(10),
@@ -579,7 +625,16 @@ class _HomeState extends State<Home> {
                                       backgroundColor: Colors.green.shade700,
                                       foregroundColor: Colors.white,
                                     ),
-                                    child: Text('Hadir'),
+                                    child: isLoadingHadir
+                                        ? SizedBox(
+                                            width: 20,
+                                            height: 20,
+                                            child: CircularProgressIndicator(
+                                              color: Colors.white,
+                                              strokeWidth: 1,
+                                            ),
+                                          )
+                                        : Text('Hadir'),
                                   ),
                                 ),
                               ],

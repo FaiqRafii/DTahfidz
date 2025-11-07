@@ -17,10 +17,10 @@ class Halaqoh {
 
   factory Halaqoh.fromJson(Map<String, dynamic> json) {
     return Halaqoh(
-      id_halaqoh: json['id_halaqoh'],
+      id_halaqoh: json['_id'],
       id_user: json['id_user'],
       halaqoh: json['halaqoh'],
-      jumlah_santri: json['jumlah_santri'],
+      jumlah_santri: json['jumlah_santri'].toString(),
       lokasi_halaqoh: json['lokasi_halaqoh'],
     );
   }

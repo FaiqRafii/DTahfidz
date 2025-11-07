@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_uas/model/userModel.dart';
 import 'package:project_uas/viewmodel/loginViewModel.dart';
+import 'package:project_uas/viewmodel/userViewModel.dart';
 
 class Password extends StatefulWidget {
   const Password({super.key});
@@ -14,11 +15,13 @@ class _PasswordState extends State<Password> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   bool _isObscured = true;
-  bool _rememberMe = false;
+  bool isLoading = false;
   String errorMessage = '';
 
   @override
   Widget build(BuildContext context) {
+    final User user = ModalRoute.of(context)?.settings.arguments as User;
+
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.grey.shade100),
       body: SafeArea(
@@ -59,7 +62,7 @@ class _PasswordState extends State<Password> {
                       children: [
                         TextField(
                           cursorColor: Colors.black,
-                          controller: _confirmPasswordController,
+                          controller: _newPasswordController,
                           obscureText: _isObscured,
                           decoration: InputDecoration(
                             suffixIcon: IconButton(
@@ -136,7 +139,16 @@ class _PasswordState extends State<Password> {
                     Container(
                       width: double.infinity,
                       child: ElevatedButton(
-                        child: Text('Simpan'),
+                        child: isLoading
+                            ? SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 1,
+                                ),
+                              )
+                            : Text('Simpan'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green.shade700,
                           foregroundColor: Colors.white,
@@ -144,7 +156,43 @@ class _PasswordState extends State<Password> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        onPressed: () {},
+                        onPressed: () async {
+                          if (_newPasswordController.value.text !=
+                              _confirmPasswordController.value.text) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  "Password Konfirmasi Tidak Sama Dengan Password Baru",
+                                ),
+                              ),
+                            );
+                          } else {
+                            setState(() {
+                              isLoading = true;
+                            });
+
+                            final response = await UserViewModel()
+                                .changePassword(
+                                  user.id_user,
+                                  _newPasswordController.value.text,
+                                );
+
+                            setState(() {
+                              isLoading = false;
+                            });
+
+                            if (response) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("Berhasil Merubah Password"),
+                                ),
+                              );
+                              Future.delayed(Duration(seconds: 1), () {
+                                Navigator.pop(context);
+                              });
+                            }
+                          }
+                        },
                       ),
                     ),
                   ],

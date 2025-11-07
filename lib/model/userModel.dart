@@ -20,7 +20,7 @@ class User {
       email: json['email'],
       password: json['password'],
       nama: json['nama'],
-      id_user: json['id_user'],
+      id_user: json['_id'],
       level: json['level'],
     );
   }

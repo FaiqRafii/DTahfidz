@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:project_uas/model/userModel.dart';
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class LoginViewModel {
   Future<List<User>> loadUsers() async {
@@ -21,13 +22,33 @@ class LoginViewModel {
   }
 
   Future<User?> login(String email, String password) async {
-    List<User> users = await loadUsers();
+    Map<String, String> headers = {'Content-Type': 'application/json'};
 
-    for (var user in users) {
-      if (user.email == email && user.password == password) {
-        return user;
+    Map<String, dynamic> body = {'email': email, 'password': password};
+
+    final response = await http.post(
+      Uri.parse('https://dtahfidz-api.vercel.app/login'),
+      headers: headers,
+      body: json.encode(body),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+
+      if (data is Map<String, dynamic>) {
+        return User.fromJson(data);
+      } else {
+        return null;
       }
     }
-    return null;
+
+    // List<User> users = await loadUsers();
+
+    // for (var user in users) {
+    //   if (user.email == email && user.password == password) {
+    //     return user;
+    //   }
+    // }
+    // return null;
   }
 }

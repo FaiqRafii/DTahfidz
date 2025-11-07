@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:project_uas/model/quranModel.dart';
 import 'package:project_uas/viewmodel/quranViewModel.dart';
+import 'package:project_uas/viewmodel/setoranSantriViewModel.dart';
 
 class TabTambah extends StatefulWidget {
-  const TabTambah({super.key});
+  final String id_santri;
+  const TabTambah({super.key, required this.id_santri});
 
   @override
   State<TabTambah> createState() => _TabTambahState();
@@ -14,7 +16,8 @@ class _TabTambahState extends State<TabTambah> {
   final TextEditingController ayatAkhirController = TextEditingController();
   final TextEditingController ayatMulaiController = TextEditingController();
   final TextEditingController searchController = TextEditingController();
-  String? selectedWaktu = 'subuh';
+  String selectedWaktu = 'subuh';
+  bool isLoading = false;
 
   Map<String, String> selectedSurahAwal = {};
   Map<String, String> selectedSurahAkhir = {};
@@ -31,7 +34,11 @@ class _TabTambahState extends State<TabTambah> {
   @override
   void initState() {
     super.initState();
+    // surahList = widget.surahList;
+    // print("tab tambah surah list: ${widget.surahList}");
+    // filteredSurahList = List.from(surahList);
     loadSurahList();
+    print("filtered surah list: ${filteredSurahList}");
   }
 
   // Function to load Surah data
@@ -39,7 +46,16 @@ class _TabTambahState extends State<TabTambah> {
     List<Quran> data = await QuranViewModel().fetchData();
     setState(() {
       surahList = data;
-      filteredSurahList = surahList; // Initialize filtered list
+      filteredSurahList = surahList;
+      selectedSurahAwal = {
+        'id_surah': surahList.first.id_surah,
+        'nama_surah': surahList.first.nama_surah,
+      };
+      selectedSurahAkhir = {
+        'id_surah': surahList.first.id_surah,
+        'nama_surah': surahList.first.nama_surah,
+      };
+      print("surah list: ${surahList}");
     });
   }
 
@@ -119,7 +135,7 @@ class _TabTambahState extends State<TabTambah> {
                         ),
                         onChanged: (query) {
                           searchSurah(query); // Panggil pencarian saat mengetik
-                          setState(() {});
+                          // setState(() {});
                         },
                       ),
                     ),
@@ -179,6 +195,10 @@ class _TabTambahState extends State<TabTambah> {
 
   @override
   Widget build(BuildContext context) {
+    if (filteredSurahList.isEmpty) {
+      return Center(child: CircularProgressIndicator());
+    }
+
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.only(top: 20),
@@ -242,7 +262,10 @@ class _TabTambahState extends State<TabTambah> {
                             Icons.watch_later_outlined,
                             color: Colors.green.shade700,
                           ),
-                          textStyle: TextStyle(fontFamily: 'Poppins'),
+                          textStyle: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 14,
+                          ),
 
                           dropdownMenuEntries: [
                             DropdownMenuEntry<String>(
@@ -256,7 +279,7 @@ class _TabTambahState extends State<TabTambah> {
                           ],
                           onSelected: (String? value) {
                             setState(() {
-                              selectedWaktu = value;
+                              selectedWaktu = value!;
                             });
                           },
                         ),
@@ -281,106 +304,41 @@ class _TabTambahState extends State<TabTambah> {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(5),
                           ),
-                          child: FutureBuilder(
-                            future: QuranViewModel().fetchData(),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return Expanded(
-                                  child: Container(
-                                    height: 56,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: Colors.white,
-                                      border: Border.all(
-                                        color: Colors.grey.shade700,
-                                      ),
+                          child: GestureDetector(
+                            onTap: () => _showSurahDialog(context, 'mulai'),
+                            child: Container(
+                              height: 56,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: Colors.white,
+                                border: Border.all(color: Colors.grey.shade700),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(5),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Icon(
+                                      Icons.book,
+                                      color: Colors.green.shade700,
+                                      size: 25,
                                     ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(5),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          Icon(
-                                            Icons.book,
-                                            color: Colors.green.shade700,
-                                            size: 25,
-                                          ),
-                                          //datepicker
-                                          Text(
-                                            'Memuat...',
-                                            style: TextStyle(
-                                              fontFamily: 'Poppins',
-                                            ),
-                                          ),
-                                          Icon(
-                                            Icons.arrow_drop_down_rounded,
-                                            color: Colors.green.shade700,
-                                            size: 30,
-                                          ),
-                                        ],
-                                      ),
+                                    //datepicker
+                                    Text(
+                                      selectedSurahAwal['nama_surah'] ??
+                                          surahList.first.nama_surah,
+                                      style: TextStyle(fontFamily: 'Poppins'),
                                     ),
-                                  ),
-                                );
-                              } else if (snapshot.hasError) {
-                                return Text(
-                                  'Error: ${snapshot.error}',
-                                  style: TextStyle(fontFamily: 'Poppins'),
-                                );
-                              } else if (!snapshot.hasData ||
-                                  snapshot.data!.isEmpty) {
-                                return Text(
-                                  'No Surah Found',
-                                  style: TextStyle(fontFamily: 'Poppins'),
-                                );
-                              }
-
-                              return Expanded(
-                                child: GestureDetector(
-                                  onTap: () =>
-                                      _showSurahDialog(context, 'mulai'),
-                                  child: Container(
-                                    height: 56,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: Colors.white,
-                                      border: Border.all(
-                                        color: Colors.grey.shade700,
-                                      ),
+                                    Icon(
+                                      Icons.arrow_drop_down_rounded,
+                                      color: Colors.green.shade700,
+                                      size: 30,
                                     ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(5),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          Icon(
-                                            Icons.book,
-                                            color: Colors.green.shade700,
-                                            size: 25,
-                                          ),
-                                          //datepicker
-                                          Text(
-                                            selectedSurahAwal['nama_surah'] ??
-                                                surahList.first.nama_surah,
-                                            style: TextStyle(
-                                              fontFamily: 'Poppins',
-                                            ),
-                                          ),
-                                          Icon(
-                                            Icons.arrow_drop_down_rounded,
-                                            color: Colors.green.shade700,
-                                            size: 30,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
+                                  ],
                                 ),
-                              );
-                            },
+                              ),
+                            ),
                           ),
                         ),
                         Expanded(
@@ -436,106 +394,42 @@ class _TabTambahState extends State<TabTambah> {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(5),
                           ),
-                          child: FutureBuilder(
-                            future: QuranViewModel().fetchData(),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return Expanded(
-                                  child: Container(
-                                    height: 56,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: Colors.white,
-                                      border: Border.all(
-                                        color: Colors.grey.shade700,
-                                      ),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(5),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          Icon(
-                                            Icons.book,
-                                            color: Colors.green.shade700,
-                                            size: 25,
-                                          ),
-                                          //datepicker
-                                          Text(
-                                            'Memuat...',
-                                            style: TextStyle(
-                                              fontFamily: 'Poppins',
-                                            ),
-                                          ),
-                                          Icon(
-                                            Icons.arrow_drop_down_rounded,
-                                            color: Colors.green.shade700,
-                                            size: 30,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              } else if (snapshot.hasError) {
-                                return Text(
-                                  'Error: ${snapshot.error}',
-                                  style: TextStyle(fontFamily: 'Poppins'),
-                                );
-                              } else if (!snapshot.hasData ||
-                                  snapshot.data!.isEmpty) {
-                                return Text(
-                                  'No Surah Found',
-                                  style: TextStyle(fontFamily: 'Poppins'),
-                                );
-                              }
 
-                              return Expanded(
-                                child: GestureDetector(
-                                  onTap: () =>
-                                      _showSurahDialog(context, 'akhir'),
-                                  child: Container(
-                                    height: 56,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: Colors.white,
-                                      border: Border.all(
-                                        color: Colors.grey.shade700,
-                                      ),
+                          child: GestureDetector(
+                            onTap: () => _showSurahDialog(context, 'akhir'),
+                            child: Container(
+                              height: 56,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: Colors.white,
+                                border: Border.all(color: Colors.grey.shade700),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(5),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Icon(
+                                      Icons.book,
+                                      color: Colors.green.shade700,
+                                      size: 25,
                                     ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(5),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          Icon(
-                                            Icons.book,
-                                            color: Colors.green.shade700,
-                                            size: 25,
-                                          ),
-                                          //datepicker
-                                          Text(
-                                            selectedSurahAkhir['nama_surah'] ??
-                                                surahList.first.nama_surah,
-                                            style: TextStyle(
-                                              fontFamily: 'Poppins',
-                                            ),
-                                          ),
-                                          Icon(
-                                            Icons.arrow_drop_down_rounded,
-                                            color: Colors.green.shade700,
-                                            size: 30,
-                                          ),
-                                        ],
-                                      ),
+                                    //datepicker
+                                    Text(
+                                      selectedSurahAkhir['nama_surah'] ??
+                                          surahList.first.nama_surah,
+                                      style: TextStyle(fontFamily: 'Poppins'),
                                     ),
-                                  ),
+                                    Icon(
+                                      Icons.arrow_drop_down_rounded,
+                                      color: Colors.green.shade700,
+                                      size: 30,
+                                    ),
+                                  ],
                                 ),
-                              );
-                            },
+                              ),
+                            ),
                           ),
                         ),
                         Expanded(
@@ -580,15 +474,65 @@ class _TabTambahState extends State<TabTambah> {
             Container(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {},
-                child: Text(
-                  'Simpan',
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                onPressed: () async {
+                  if (selectedWaktu != null &&
+                      selectedSurahAwal['id_surah'] != null &&
+                      selectedSurahAkhir['id_surah'] != null &&
+                      ayatMulaiController.text.isNotEmpty &&
+                      ayatAkhirController.text.isNotEmpty) {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    final add = await SetoranSantriViewModel().addSetoran(
+                      widget.id_santri,
+                      formattedDate,
+                      selectedWaktu!,
+                      selectedSurahAwal['id_surah']!,
+                      ayatMulaiController.value.text,
+                      selectedSurahAkhir['id_surah']!,
+                      ayatAkhirController.value.text,
+                    );
+
+                    if (add) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Berhasil Menyimpan Setoran")),
+                      );
+                      setState(() {
+                        isLoading = false;
+                      });
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Gagal Menyimpan Setoran")),
+                      );
+                    }
+                  } else {
+                    // Show an error or validation message
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          "Pastikan semua data terisi dengan benar",
+                        ),
+                      ),
+                    );
+                  }
+                },
+                child: isLoading
+                    ? SizedBox(
+                        width: 10,
+                        height: 10,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 1,
+                        ),
+                      )
+                    : Text(
+                        'Simpan',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green.shade700,
                   foregroundColor: Colors.white,

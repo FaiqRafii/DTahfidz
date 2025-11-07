@@ -1,26 +1,23 @@
 import 'dart:convert';
-
+import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 import 'package:project_uas/model/halaqohModel.dart';
 
 class HalaqohViewModel {
-  Future<List<Halaqoh>> loadHalaqoh() async {
+  Future<Halaqoh> loadHalaqoh(String id_user) async {
     try {
-      final String response = await rootBundle.loadString(
-        'assets/data/halaqoh.json',
+      final response = await http.get(
+        Uri.parse('https://dtahfidz-api.vercel.app/halaqoh?id_user=${id_user}'),
       );
 
-      final data = jsonDecode(response);
-
-      if (data is List) {
-        return data
-            .map((halaqohJson) => Halaqoh.fromJson(halaqohJson))
-            .toList();
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return Halaqoh.fromJson(data);
       } else {
-        throw Exception('Format data tidak sesuai');
+        throw Exception('Gagal memuat halaqoh, status: ${response.statusCode}');
       }
     } catch (e) {
-      rethrow;
+      throw Exception('Error load halaqoh from API: ${e.toString()}');
     }
   }
 }

@@ -73,7 +73,7 @@ class _ProfileState extends State<Profile> {
                 SizedBox(height: 20),
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, '/password');
+                    Navigator.pushNamed(context, '/password', arguments: user);
                   },
                   child: Container(
                     height: 60,

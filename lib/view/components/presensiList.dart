@@ -26,6 +26,7 @@ class PresensiList extends StatefulWidget {
 class _PresensiListState extends State<PresensiList> {
   late Future<List<Santri>> santriList;
   late Future<List<PresensiSantri>> presensiList;
+  bool isLoading = false;
 
   // Menggunakan ValueNotifier untuk status presensi
   Map<String, ValueNotifier<String>> presensiStatuses = {}; // Tipe yang benar
@@ -103,7 +104,7 @@ class _PresensiListState extends State<PresensiList> {
               future: santriList,
               builder: (context, santriSnapshot) {
                 if (santriSnapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: LinearProgressIndicator());
+                  return Center(child: CircularProgressIndicator());
                 } else if (santriSnapshot.hasError) {
                   return Center(child: Text('Error ${santriSnapshot.error}'));
                 } else if (!santriSnapshot.hasData ||
@@ -116,7 +117,7 @@ class _PresensiListState extends State<PresensiList> {
                   builder: (context, presensiSnapshot) {
                     if (presensiSnapshot.connectionState ==
                         ConnectionState.waiting) {
-                      return SizedBox.shrink();
+                      return Center(child: CircularProgressIndicator());
                     } else if (presensiSnapshot.hasError) {
                       return Center(
                         child: Text('Error ${presensiSnapshot.error}'),
@@ -174,6 +175,9 @@ class _PresensiListState extends State<PresensiList> {
                                       activeColor: Colors.green.shade700,
                                       onChanged: (String? value) {
                                         statusNotifier.value = value!;
+                                        print(
+                                          "Presensi Statuses: ${presensiStatuses}",
+                                        );
                                       },
                                     );
                                   },
@@ -188,6 +192,9 @@ class _PresensiListState extends State<PresensiList> {
                                       activeColor: Colors.green.shade700,
                                       onChanged: (String? value) {
                                         statusNotifier.value = value!;
+                                        print(
+                                          "Presensi Statuses: ${presensiStatuses}",
+                                        );
                                       },
                                     );
                                   },
@@ -202,6 +209,9 @@ class _PresensiListState extends State<PresensiList> {
                                       activeColor: Colors.green.shade700,
                                       onChanged: (String? value) {
                                         statusNotifier.value = value!;
+                                        print(
+                                          "Presensi Statuses: ${presensiStatuses}",
+                                        );
                                       },
                                     );
                                   },
@@ -220,15 +230,61 @@ class _PresensiListState extends State<PresensiList> {
           Container(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {},
-              child: Text(
-                'Simpan',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+              onPressed: () async {
+                // setState(() {
+                //   isLoading = true;
+                // });
+                bool send = await PresensiSantriViewModel().addPresensiSantri(
+                  presensiStatuses,
+                  DateFormat('dd-MM-yyyy').format(widget.selectedDate),
+                  widget.waktu.waktu,
+                );
+
+                // setState(() {
+                //   isLoading = false;
+                // });
+
+                if (send) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Presensi berhasil disimpan')),
+                  );
+                  String formattedDate = DateFormat(
+                    'dd-MM-yyyy',
+                  ).format(widget.selectedDate);
+                  setState(() {
+                    // Re-fetch santriList and presensiList
+                    santriList = SantriViewModel().getSantriByHalaqoh(
+                      widget.halaqoh.id_halaqoh,
+                    );
+                    presensiList = PresensiSantriViewModel().getPresensiSantri(
+                      widget.halaqoh.id_halaqoh,
+                      formattedDate,
+                      widget.waktu.waktu,
+                    );
+                  });
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Gagal menyimpan presensi")),
+                  );
+                }
+              },
+              child: isLoading
+                  ? SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 3,
+                      ),
+                    )
+                  : Text(
+                      'Simpan',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green.shade700,
                 foregroundColor: Colors.white,

@@ -15,7 +15,7 @@ class Santri {
 
   factory Santri.fromJson(Map<String, dynamic> json) {
     return Santri(
-      id_santri: json['id_santri'],
+      id_santri: json['_id'],
       id_halaqoh: json['id_halaqoh'],
       nama: json['nama'],
       kelas: json['kelas'],

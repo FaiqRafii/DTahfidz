@@ -13,7 +13,7 @@ class PresensiMusyrif {
 
   factory PresensiMusyrif.fromJson(Map<String, dynamic> json) {
     return PresensiMusyrif(
-      id_presensi: json['id_presensi'],
+      id_presensi: json['_id'],
       id_user: json['id_user'],
       tanggal: json['tanggal'],
       jam: json['jam'],
