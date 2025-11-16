@@ -56,26 +56,24 @@ class _SetoranState extends State<Setoran> with SingleTickerProviderStateMixin {
   }
 
   Future<void> loadSantriList() async {
-    print("halaqoh id: ${halaqoh!.id_halaqoh}");
     List<Santri> data = await SantriViewModel().getSantriByHalaqoh(
       halaqoh!.id_halaqoh,
     );
 
-    print("Data santri from api: ${data}");
-
     setState(() {
       santriList = data;
-      filteredSantriList = santriList; // Initialize filtered list
+      filteredSantriList = santriList;
 
       if (santriList.isNotEmpty) {
         idAwal = santriList.first.id_santri;
-        selectedSantri = {
-          'id_user': santriList.first.id_santri,
-          'nama': santriList.first.nama,
-        };
-      } else {
-        idAwal = ''; // Handle empty case if needed
-        selectedSantri = {'id_user': '', 'nama': 'No Santri Available'};
+
+        // 💡 JANGAN overwrite jika user sudah memilih santri
+        if (selectedSantri.isEmpty) {
+          selectedSantri = {
+            'id_user': santriList.first.id_santri,
+            'nama': santriList.first.nama,
+          };
+        }
       }
     });
   }
@@ -242,12 +240,24 @@ class _SetoranState extends State<Setoran> with SingleTickerProviderStateMixin {
                                         color: Colors.green.shade700,
                                         size: 25,
                                       ),
-                                      Text(
-                                        selectedSantri['nama'] ??
-                                            (santriList.isNotEmpty
-                                                ? santriList.first.nama
-                                                : 'Memuat...'),
-                                        style: TextStyle(fontFamily: 'Poppins'),
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 5,
+                                          ),
+                                          child: Text(
+                                            selectedSantri['nama'] ??
+                                                (santriList.isNotEmpty
+                                                    ? santriList.first.nama
+                                                    : 'Memuat...'),
+                                            softWrap: true,
+                                            overflow: TextOverflow.visible,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                       Icon(
                                         Icons.arrow_drop_down_rounded,

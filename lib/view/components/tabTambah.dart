@@ -135,7 +135,7 @@ class _TabTambahState extends State<TabTambah> {
                         ),
                         onChanged: (query) {
                           searchSurah(query); // Panggil pencarian saat mengetik
-                          // setState(() {});
+                          setState(() {});
                         },
                       ),
                     ),

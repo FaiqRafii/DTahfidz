@@ -15,6 +15,7 @@ class _PasswordState extends State<Password> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   bool _isObscured = true;
+  bool _isObscuredConfirm = true;
   bool isLoading = false;
   String errorMessage = '';
 
@@ -100,16 +101,16 @@ class _PasswordState extends State<Password> {
                         TextField(
                           cursorColor: Colors.black,
                           controller: _confirmPasswordController,
-                          obscureText: _isObscured,
+                          obscureText: _isObscuredConfirm,
                           decoration: InputDecoration(
                             suffixIcon: IconButton(
                               onPressed: () {
                                 setState(() {
-                                  _isObscured = !_isObscured;
+                                  _isObscuredConfirm = !_isObscuredConfirm;
                                 });
                               },
                               icon: Icon(
-                                _isObscured
+                                _isObscuredConfirm
                                     ? Icons.visibility
                                     : Icons.visibility_off,
                                 size: 20,

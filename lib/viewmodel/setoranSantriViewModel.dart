@@ -82,4 +82,74 @@ class SetoranSantriViewModel {
       setoran.id_surah_akhir = surahAkhir.nama_surah;
     }
   }
+
+  Future<String> fetchSurahId(String setoran) async {
+    List<Quran> surahList = await QuranViewModel().fetchData();
+
+    Quran? surahMulai = surahList.firstWhere(
+      (surah) => surah.nama_surah == setoran,
+      orElse: () => Quran(id_surah: '', nama_surah: 'Unknown'),
+    );
+
+    return surahMulai.id_surah;
+  }
+
+  Future<bool> updateSetoran(
+    String id_setoran,
+    String tanggal,
+    String waktu,
+    String id_surah_mulai,
+    String ayat_mulai,
+    String id_surah_akhir,
+    String ayat_akhir,
+  ) async {
+    try {
+      String surahMulaiId = await fetchSurahId(id_surah_mulai);
+      String surahAkhirId = await fetchSurahId(id_surah_akhir);
+      print(
+        "received in setoransantriviewmodel: ${id_setoran}, ${tanggal},  ${waktu}, ${surahMulaiId}, ${ayat_mulai}, ${id_surah_akhir}, ${ayat_akhir}",
+      );
+
+      final response = await http.put(
+        Uri.parse('https://dtahfidz-api.vercel.app/setoran'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'id_setoran': id_setoran,
+          'tanggal': tanggal,
+          'jam': waktu,
+          'id_surah_mulai': surahMulaiId,
+          'ayat_mulai': ayat_mulai,
+          'id_surah_akhir': surahAkhirId,
+          'ayat_akhir': ayat_akhir,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        print("error update:${response.body}");
+
+        return false;
+      }
+    } catch (e) {
+      throw Exception("Error updating setoran: $e");
+    }
+  }
+
+  Future<bool> deleteSetoran(String id_setoran) async {
+    try {
+      final response = await http.delete(
+        Uri.parse(
+          'https://dtahfidz-api.vercel.app/setoran?id_setoran=${id_setoran}',
+        ),
+      );
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      throw Exception("Error updating setoran: $e");
+    }
+  }
 }

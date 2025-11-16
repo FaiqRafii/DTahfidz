@@ -34,6 +34,9 @@ class PresensiSantriViewModel {
         body: jsonEncode(presensiList),
       );
 
+      print(response.statusCode);
+      print(response.body);
+
       if (response.statusCode == 201) {
         return true;
       } else {

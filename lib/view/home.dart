@@ -206,7 +206,9 @@ class _HomeState extends State<Home> {
                                     size: 17,
                                   ),
                                   Text(
-                                    '${halaqoh?.jumlah_santri} Santri' ?? '0',
+                                    halaqoh?.jumlah_santri == null
+                                        ? ''
+                                        : '${halaqoh?.jumlah_santri} Santri',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontFamily: 'Poppins',
