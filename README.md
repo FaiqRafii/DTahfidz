@@ -95,3 +95,6 @@ Aplikasi menggunakan dua sumber API:
    ```bash
    git clone <URL_REPOSITORY_KAMU>
    cd <NAMA_FOLDER_PROJECT>
+2. Login
+   Email: faiq@gmail.com
+   Password: password
