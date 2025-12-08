@@ -1,35 +1,38 @@
-# DTahfidz - Aplikasi Pengelolaan Hafalan Santri untuk Musyrif Tahfidz
+# DTahfidz - Aplikasi Pengelolaan Hafalan & Presensi Santri
 
-DTahfidz adalah aplikasi mobile berbasis Flutter yang membantu musyrif tahfidz dalam mengelola administrasi halaqoh secara digital—mulai dari login, melihat detail halaqoh, presensi santri dan musyrif, hingga pencatatan serta pemantauan setoran hafalan. Aplikasi ini dirancang untuk menggantikan proses manual agar pencatatan lebih rapi, cepat, dan mudah direkap. :contentReference[oaicite:0]{index=0}
+DTahfidz adalah aplikasi mobile berbasis Flutter yang membantu musyrif tahfidz mengelola administrasi halaqoh secara digital—mulai dari login, melihat detail halaqoh, presensi santri dan musyrif, hingga pencatatan serta pemantauan setoran hafalan. Aplikasi ini dirancang untuk mempercepat pencatatan, meminimalkan kesalahan administrasi, dan memudahkan rekap data harian.
 
-Aplikasi menggunakan arsitektur **MVVM (Model-View-ViewModel)**. Data utama dimuat dari API DTahfidz dan data surah diambil dari API Al-Qur’an pihak ketiga. :contentReference[oaicite:1]{index=1}
+Aplikasi menerapkan arsitektur **MVVM (Model–View–ViewModel)** untuk memisahkan UI, logika, dan pengolahan data API sehingga lebih mudah dikembangkan dan dirawat.
 
 ---
 
 ## Fitur Utama
-- Autentikasi musyrif (login).
-- Menampilkan detail halaqoh berdasarkan akun musyrif.
-- Presensi musyrif (subuh/malam).
-- Presensi santri per halaqoh, tanggal, dan jam.
+- Login musyrif
+- Detail halaqoh musyrif
+- Presensi musyrif
+- Presensi santri per halaqoh, tanggal, dan jam
 - Setoran hafalan santri:
   - Tambah setoran
-  - Lihat riwayat setoran
-  - Update dan hapus setoran
-- Ganti password.
+  - Lihat riwayat
+  - Update setoran
+  - Hapus setoran
+- Ganti password
+- Pencarian data santri / surah (sesuai implementasi di aplikasi)
 
 ---
 
 ## Tech Stack
-- **Flutter**
-- **Arsitektur**: MVVM
-- **Navigasi**: Named Routes
+- Flutter
+- HTTP
+- Arsitektur: MVVM
+- Named Routes
 
 ---
 
 ## Sumber API
-Aplikasi menggunakan dua sumber API utama:  
-1) **DTahfidz API** untuk user, santri, halaqoh, presensi, dan setoran.  
-2) **Quran API** untuk daftar surah. :contentReference[oaicite:2]{index=2}
+Aplikasi menggunakan dua sumber API:
+1. **DTahfidz API** untuk data user, halaqoh, santri, presensi, dan setoran.
+2. **Quran API** untuk daftar surah.
 
 ---
 
@@ -37,57 +40,58 @@ Aplikasi menggunakan dua sumber API utama:
 
 ### Auth
 - **POST** `https://dtahfidz-api.vercel.app/login`  
-  Untuk login musyrif. :contentReference[oaicite:3]{index=3}
+  Login musyrif
 
 ### Halaqoh
-- **GET** `https://dtahfidz-api.vercel.app/halaqoh?id_user={id_user_musyrif}`  
-  Mengambil detail halaqoh musyrif. :contentReference[oaicite:4]{index=4}
-
-### Presensi Musyrif
-- **GET** `https://dtahfidz-api.vercel.app/presensi/musyrif?id_user={id_user}&tanggal={tanggal}`  
-  Mengambil rekap presensi musyrif. :contentReference[oaicite:5]{index=5}
-- **POST** `https://dtahfidz-api.vercel.app/presensi/musyrif`  
-  Menambahkan presensi musyrif. :contentReference[oaicite:6]{index=6}
+- **GET** `https://dtahfidz-api.vercel.app/halaqoh?id_user={id_user}`  
+  Mengambil detail halaqoh musyrif
 
 ### Santri
 - **GET** `https://dtahfidz-api.vercel.app/santri?id_halaqoh={id_halaqoh}`  
-  Mengambil daftar santri per halaqoh (dipakai saat memilih santri pada setoran). :contentReference[oaicite:7]{index=7}
+  Mengambil daftar santri per halaqoh
 
-### Setoran Hafalan
-- **POST** `https://dtahfidz-api.vercel.app/setoran`  
-  Menambahkan data setoran. :contentReference[oaicite:8]{index=8}
-- **GET** `https://dtahfidz-api.vercel.app/setoran?id_santri={id_santri}`  
-  Mengambil riwayat setoran per santri. :contentReference[oaicite:9]{index=9}
-- **PUT** `https://dtahfidz-api.vercel.app/setoran`  
-  Update setoran berdasarkan id_setoran. :contentReference[oaicite:10]{index=10}
-- **DELETE** `https://dtahfidz-api.vercel.app/setoran?id_setoran={id_setoran}`  
-  Hapus setoran. :contentReference[oaicite:11]{index=11}
+### Presensi Musyrif
+- **GET** `https://dtahfidz-api.vercel.app/presensi/musyrif?id_user={id_user}&tanggal={tanggal}`  
+  Mengambil data presensi musyrif
+- **POST** `https://dtahfidz-api.vercel.app/presensi/musyrif`  
+  Menambahkan presensi musyrif
 
 ### Presensi Santri
 - **GET** `https://dtahfidz-api.vercel.app/presensi/santri?id_halaqoh={id_halaqoh}&tanggal={tanggal}&jam={jam}`  
-  Mengambil data presensi santri. :contentReference[oaicite:12]{index=12}
+  Mengambil data presensi santri
 - **POST** `https://dtahfidz-api.vercel.app/presensi/santri`  
-  Menambahkan presensi santri. :contentReference[oaicite:13]{index=13}
+  Menambahkan presensi santri (batch)
+
+### Setoran Hafalan
+- **POST** `https://dtahfidz-api.vercel.app/setoran`  
+  Menambahkan setoran
+- **GET** `https://dtahfidz-api.vercel.app/setoran?id_santri={id_santri}`  
+  Mengambil riwayat setoran per santri
+- **PUT** `https://dtahfidz-api.vercel.app/setoran`  
+  Update setoran
+- **DELETE** `https://dtahfidz-api.vercel.app/setoran?id_setoran={id_setoran}`  
+  Hapus setoran
 
 ### Password
 - **POST** `https://dtahfidz-api.vercel.app/users/change-password`  
-  Mengubah password user. :contentReference[oaicite:14]{index=14}
+  Mengubah password user
 
-### Data Surah Al-Qur’an
+### Quran
 - **GET** `https://quran-api.santrikoding.com/api/surah`  
-  Mengambil daftar nama surah (dipakai pada form setoran). :contentReference[oaicite:15]{index=15}
+  Mengambil daftar surah
 
 ---
 
-## Cara Instalasi & Menjalankan
+## Cara Instalasi
 
 ### Prasyarat
 - Flutter SDK (stable)
 - Android Studio / VS Code
-- Android SDK & emulator atau perangkat fisik
+- Android SDK
+- Emulator Android atau perangkat fisik
 
-### Langkah
-1. Clone repo:
+### Langkah Menjalankan
+1. Clone repository:
    ```bash
-   git clone <URL_REPO_KAMU>
+   git clone <URL_REPOSITORY_KAMU>
    cd <NAMA_FOLDER_PROJECT>
