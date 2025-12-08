@@ -31,9 +31,3 @@ flutter:
           weight: 700
   assets:
     - assets/img/
-    - assets/data/user.json
-    - assets/data/santri.json
-    - assets/data/halaqoh.json
-    - assets/data/presensiSantri.json
-    - assets/data/presensiMusyrif.json
-    - assets/data/setoranSantri.json

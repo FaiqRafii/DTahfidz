@@ -256,20 +256,21 @@ class _PresensiListState extends State<PresensiList> {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () async {
-                // setState(() {
-                //   isLoading = true;
-                // });
-                bool send = await PresensiSantriViewModel().addPresensiSantri(
+                setState(() {
+                  isLoading = true;
+                });
+
+                String send = await PresensiSantriViewModel().addPresensiSantri(
                   presensiStatuses,
                   DateFormat('dd-MM-yyyy').format(widget.selectedDate),
                   widget.waktu.waktu,
                 );
 
-                // setState(() {
-                //   isLoading = false;
-                // });
+                setState(() {
+                  isLoading = false;
+                });
 
-                if (send) {
+                if (send == 'sukses') {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Presensi berhasil disimpan')),
                   );
@@ -287,9 +288,17 @@ class _PresensiListState extends State<PresensiList> {
                       widget.waktu.waktu,
                     );
                   });
+                } else if (send == 'status kosong') {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Input presensi harus diisi")),
+                  );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Gagal menyimpan presensi")),
+                    SnackBar(
+                      content: Text(
+                        "Gagal menyimpan presensi. Cek koneksi internet Anda",
+                      ),
+                    ),
                   );
                 }
               },
@@ -299,7 +308,7 @@ class _PresensiListState extends State<PresensiList> {
                       width: 20,
                       child: CircularProgressIndicator(
                         color: Colors.white,
-                        strokeWidth: 3,
+                        strokeWidth: 1,
                       ),
                     )
                   : Text(

@@ -116,23 +116,7 @@ class _LoginState extends State<Login> {
                         ),
                       ),
                     ),
-                    Row(
-                      children: [
-                        Checkbox(
-                          value: _rememberMe,
-                          activeColor: Colors.green.shade700,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              _rememberMe = value ?? false;
-                            });
-                          },
-                        ),
-                        Text(
-                          'Ingat Saya',
-                          style: TextStyle(fontFamily: 'Poppins'),
-                        ),
-                      ],
-                    ),
+
                     SizedBox(height: 20),
                     Text(
                       errorMessage,

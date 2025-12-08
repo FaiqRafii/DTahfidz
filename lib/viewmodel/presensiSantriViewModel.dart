@@ -10,13 +10,16 @@ import 'package:http/http.dart' as http;
 class PresensiSantriViewModel {
   final SantriViewModel santriViewModel = SantriViewModel();
 
-  Future<bool> addPresensiSantri(
+  Future<String> addPresensiSantri(
     Map<String, ValueNotifier<String>> presensiData,
     String tanggal,
     String jam,
   ) async {
     try {
       List<Map<String, dynamic>> presensiList = [];
+
+      final hasEmpty = presensiData.values.any((v) => v.value.trim().isEmpty);
+      if (hasEmpty) return 'status kosong';
 
       presensiData.forEach((id_santri, statusNotifier) {
         String status = statusNotifier.value;
@@ -38,9 +41,9 @@ class PresensiSantriViewModel {
       print(response.body);
 
       if (response.statusCode == 201) {
-        return true;
+        return 'sukses';
       } else {
-        return false;
+        return 'eror ${response.body}';
       }
     } catch (e) {
       throw Exception("Error sending presensi santri: $e");
@@ -53,7 +56,6 @@ class PresensiSantriViewModel {
     String jam,
   ) async {
     try {
-      // Memuat data presensiSantri.json
       final presensiResponse = await http.get(
         Uri.parse(
           'https://dtahfidz-api.vercel.app/presensi/santri?id_halaqoh=${id_halaqoh}&tanggal=${tanggal}&jam=${jam}',

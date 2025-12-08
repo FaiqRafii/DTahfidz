@@ -625,7 +625,9 @@ class _TabLihatState extends State<TabLihat> {
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content: Text('Gagal menghapus setoran'),
+                                      content: Text(
+                                        'Gagal menghapus setoran. Cek koneksi internet Anda',
+                                      ),
                                     ),
                                   );
                                 }
@@ -704,7 +706,9 @@ class _TabLihatState extends State<TabLihat> {
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content: Text('Failed to update setoran'),
+                                      content: Text(
+                                        'Gagal mengupdate setoran. Cek koneksi internet Anda',
+                                      ),
                                     ),
                                   );
                                 }

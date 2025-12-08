@@ -502,7 +502,11 @@ class _TabTambahState extends State<TabTambah> {
                       });
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Gagal Menyimpan Setoran")),
+                        SnackBar(
+                          content: Text(
+                            "Gagal Menyimpan Setoran. Cek koneksi internet Anda",
+                          ),
+                        ),
                       );
                     }
                   } else {

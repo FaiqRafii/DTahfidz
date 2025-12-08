@@ -79,7 +79,7 @@ class _SetoranState extends State<Setoran> with SingleTickerProviderStateMixin {
   }
 
   // Function to search surah based on the query
-  void searchSurah(String query) {
+  void searchSantri(String query) {
     final results = santriList.where((santri) {
       return santri.nama.toLowerCase().contains(query.toLowerCase());
     }).toList();
@@ -126,7 +126,7 @@ class _SetoranState extends State<Setoran> with SingleTickerProviderStateMixin {
                           ),
                         ),
                         onChanged: (query) {
-                          searchSurah(query); // Panggil pencarian saat mengetik
+                          searchSantri(query);
                           setState(() {});
                         },
                       ),
@@ -156,9 +156,7 @@ class _SetoranState extends State<Setoran> with SingleTickerProviderStateMixin {
                                       };
                                     });
 
-                                    Navigator.of(
-                                      context,
-                                    ).pop(); // Close dialog after selecting
+                                    Navigator.of(context).pop();
                                   },
                                 );
                               },

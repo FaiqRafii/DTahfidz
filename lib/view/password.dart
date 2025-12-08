@@ -185,12 +185,20 @@ class _PasswordState extends State<Password> {
                             if (response) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text("Berhasil Merubah Password"),
+                                  content: Text("Berhasil Mengubah Password"),
                                 ),
                               );
                               Future.delayed(Duration(seconds: 1), () {
                                 Navigator.pop(context);
                               });
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    "Gagal Mengubah Password. Cek koneksi internet Anda",
+                                  ),
+                                ),
+                              );
                             }
                           }
                         },
