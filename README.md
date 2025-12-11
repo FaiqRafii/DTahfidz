@@ -97,4 +97,4 @@ Aplikasi menggunakan dua sumber API:
    cd <NAMA_FOLDER_PROJECT>
 2. Login
    Email: faiq@gmail.com
-   Password: password
+   Password: password2
