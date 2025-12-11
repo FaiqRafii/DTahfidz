@@ -488,7 +488,13 @@ class _HomeState extends State<Home> {
                                         isMalamPresensi = false;
                                       }
 
-                                      if (isSubuhPresensi && isSubuhPresensi) {
+                                      if (isSubuhPresensi && isMalamPresensi) {
+                                        isFull = 'yes';
+                                      } else if (waktuStatus == 'subuh' &&
+                                          isSubuhPresensi) {
+                                        isFull = 'yes';
+                                      } else if (waktuStatus == 'malam' &&
+                                          isMalamPresensi) {
                                         isFull = 'yes';
                                       }
 
